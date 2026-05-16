@@ -1,0 +1,439 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.app { padding: 1rem 0; font-size: 13px; }
+.header { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.logo { background: #1a3a2a; color: #fff; font-size: 11px; font-weight: 500; padding: 6px 10px; border-radius: var(--border-radius-md); letter-spacing: .05em; }
+.header h1 { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+.header p { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+.tabs { display: flex; gap: 6px; margin-bottom: 1rem; }
+.tab { padding: 5px 14px; font-size: 12px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); cursor: pointer; background: var(--color-background-secondary); color: var(--color-text-secondary); }
+.tab.active { background: var(--color-background-primary); color: var(--color-text-primary); border-color: var(--color-border-primary); font-weight: 500; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+.section-title { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 10px; }
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-group label { font-size: 11px; color: var(--color-text-secondary); }
+.form-group input, .form-group select { font-size: 12px; padding: 6px 8px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); width: 100%; }
+.pttt-selector { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.pttt-btn { padding: 6px 12px; font-size: 12px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); color: var(--color-text-secondary); cursor: pointer; }
+.pttt-btn.active { background: #1a3a2a; color: #fff; border-color: #1a3a2a; }
+.note { font-size: 11px; color: var(--color-text-secondary); font-style: italic; }
+.gen-btn { padding: 8px 20px; font-size: 13px; background: #1a3a2a; color: #fff; border: none; border-radius: var(--border-radius-md); cursor: pointer; }
+.gen-btn:hover { opacity: .9; }
+
+/* Policy rows */
+.pol-grid { display: grid; grid-template-columns: 1fr auto auto; gap: 0; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); overflow: hidden; margin-bottom: 6px; }
+.pol-hdr { background: var(--color-background-secondary); padding: 6px 10px; font-size: 11px; font-weight: 500; color: var(--color-text-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); }
+.pol-cell { padding: 6px 10px; font-size: 12px; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); }
+.pol-cell.r { text-align: right; }
+.pol-cell.g { color: #1a3a2a; font-weight: 500; }
+
+/* Summary box */
+.summary-table { width: 100%; border-collapse: collapse; }
+.summary-table td { padding: 6px 10px; font-size: 12px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.summary-table td.lbl { color: var(--color-text-secondary); width: 55%; }
+.summary-table td.val { text-align: right; font-weight: 500; color: var(--color-text-primary); }
+.summary-table tr.ck td { color: #1a3a2a; }
+.summary-table tr.vat-row td { font-style: italic; color: var(--color-text-secondary); }
+.summary-table tr.vat-row td.val { font-style: italic; }
+.summary-table tr.total-gross td { background: var(--color-background-secondary); font-size: 13px; font-weight: 500; }
+.summary-table tr.total-gross td.val { color: #1a3a2a; font-size: 14px; }
+.summary-table tr.final td { background: #1a3a2a; color: #fff !important; font-size: 13px; font-weight: 500; }
+.summary-table tr.final td.val { color: #a8d5b5 !important; font-size: 15px; }
+
+/* Payment table */
+.pt-wrap { overflow-x: auto; }
+.pt { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 460px; }
+.pt th { background: #1a3a2a; color: #fff; padding: 7px 8px; text-align: left; font-weight: 500; white-space: nowrap; }
+.pt th.c { text-align: center; }
+.pt th.r { text-align: right; }
+.pt td { padding: 6px 8px; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); vertical-align: top; }
+.pt tr:nth-child(even) td { background: var(--color-background-secondary); }
+.pt td.c { text-align: center; font-weight: 500; }
+.pt td.r { text-align: right; color: #1a3a2a; font-weight: 500; white-space: nowrap; }
+.pt td.muted { font-size: 10px; color: var(--color-text-secondary); }
+
+.apt-pills { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-bottom: 10px; }
+.pill { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 6px 10px; }
+.pill .lbl { font-size: 10px; color: var(--color-text-secondary); }
+.pill .val { font-size: 12px; font-weight: 500; color: var(--color-text-primary); margin-top: 2px; }
+
+.print-btn { padding: 7px 16px; font-size: 12px; background: #1a3a2a; color: #fff; border: none; border-radius: var(--border-radius-md); cursor: pointer; float: right; }
+.divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 10px 0; }
+</style>
+
+<div class="app">
+  <div class="header">
+    <div class="logo">DKRS</div>
+    <div>
+      <h1>Báo giá – The Emerald Boulevard</h1>
+      <p>Khu căn hộ đại lộ Ngọc Lục Bảo</p>
+    </div>
+    <button class="print-btn" onclick="sendPrompt('Tạo file PDF báo giá với thông tin hiện tại')">Xuất PDF <i class="ti ti-file-download" aria-hidden="true"></i></button>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('input')">Nhập thông tin</div>
+    <div class="tab" onclick="switchTab('quote')">Bảng báo giá</div>
+    <div class="tab" onclick="switchTab('schedule')">Lịch thanh toán</div>
+  </div>
+
+  <!-- TAB INPUT -->
+  <div id="tab-input" class="tab-content active">
+    <div class="card">
+      <p class="section-title">Thông tin căn hộ</p>
+      <div class="form-grid">
+        <div class="form-group"><label>Mã căn hộ</label><input id="maCanHo" placeholder="VD: B1-08-05" /></div>
+        <div class="form-group"><label>Loại căn hộ</label>
+          <select id="loaiCanHo">
+            <option>1 phòng ngủ</option><option selected>2 phòng ngủ</option>
+            <option>3 phòng ngủ</option><option>Duplex</option><option>Penthouse</option>
+          </select>
+        </div>
+        <div class="form-group"><label>DT tim tường (m²)</label><input id="dtTT" type="number" placeholder="75.5" /></div>
+        <div class="form-group"><label>DT thông thuỷ (m²)</label><input id="dtThu" type="number" placeholder="68.2" /></div>
+        <div class="form-group"><label>Hướng</label>
+          <select id="huong"><option>Đông</option><option>Tây</option><option>Nam</option><option>Bắc</option><option>Đông Nam</option><option>Đông Bắc</option><option>Tây Nam</option><option>Tây Bắc</option></select>
+        </div>
+        <div class="form-group"><label>View</label>
+          <select id="view"><option>View nội khu</option><option>View hồ bơi</option><option>View công viên</option><option>View thành phố</option><option>View sông</option><option>View thoáng</option></select>
+        </div>
+      </div>
+      <div class="form-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="form-group"><label>Giá bán chưa VAT (VNĐ)</label><input id="giaBan" type="number" placeholder="4500000000" oninput="liveCalc()" /></div>
+        <div class="form-group"><label>Tên khách hàng</label><input id="tenKH" placeholder="Họ và tên" /></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-title">Chính sách chiết khấu</p>
+      <div id="pol-container"></div>
+      <button onclick="addPolicy()" style="font-size:12px;margin-top:6px;cursor:pointer;padding:5px 12px;">+ Thêm chính sách</button>
+    </div>
+
+    <div class="card">
+      <p class="section-title">Phương thức thanh toán</p>
+      <div class="pttt-selector">
+        <div class="pttt-btn active" data-id="chuan" onclick="selectPTTT(this)">Chuẩn (CK 0,5%)</div>
+        <div class="pttt-btn" data-id="damPhan" onclick="selectPTTT(this)">Đàm phán (CK 11%/năm)</div>
+        <div class="pttt-btn" data-id="nhanh30" onclick="selectPTTT(this)">Nhanh 30% (CK 4,5%)</div>
+        <div class="pttt-btn" data-id="nhanh50" onclick="selectPTTT(this)">Nhanh 50% (CK 8%)</div>
+        <div class="pttt-btn" data-id="nhanh70" onclick="selectPTTT(this)">Nhanh 70% (CK 10%)</div>
+      </div>
+      <p class="note" id="pttt-note"></p>
+    </div>
+
+    <!-- Live preview -->
+    <div class="card" id="live-preview" style="display:none;">
+      <p class="section-title">Xem nhanh giá</p>
+      <table class="summary-table">
+        <tr><td class="lbl">Giá bán chưa VAT</td><td class="val" id="lp-gia-ban">—</td></tr>
+        <tr class="ck"><td class="lbl">Tổng chiết khấu</td><td class="val" id="lp-ck">—</td></tr>
+        <tr><td class="lbl">Giá sau chiết khấu (chưa VAT)</td><td class="val" id="lp-sau-ck">—</td></tr>
+        <tr class="vat-row"><td class="lbl">+ VAT 8%</td><td class="val" id="lp-vat">—</td></tr>
+        <tr class="total-gross"><td class="lbl">Tổng giá bán có VAT</td><td class="val" id="lp-gross">—</td></tr>
+      </table>
+    </div>
+
+    <button class="gen-btn" onclick="generateQuote()">Tạo báo giá <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </div>
+
+  <!-- TAB QUOTE -->
+  <div id="tab-quote" class="tab-content">
+    <div id="quote-content"><p style="text-align:center;padding:2rem;color:var(--color-text-secondary);">Vui lòng nhập thông tin và nhấn "Tạo báo giá"</p></div>
+  </div>
+
+  <!-- TAB SCHEDULE -->
+  <div id="tab-schedule" class="tab-content">
+    <div id="schedule-content"><p style="text-align:center;padding:2rem;color:var(--color-text-secondary);">Vui lòng tạo báo giá trước</p></div>
+  </div>
+</div>
+
+<script>
+const fmt = n => Math.round(n).toLocaleString('vi-VN') + ' đ';
+const fmtPct = p => typeof p === 'number' ? (p % 1 === 0 ? p + '%' : p.toFixed(1) + '%') : String(p);
+
+let selectedPTTT = 'chuan';
+let policies = [];
+
+const PTTT = {
+  chuan:   { name:'Thanh toán chuẩn',     ckRate:0.005, ckLabel:'0,5%',     note:'Chiết khấu 0,5% trên giá sản phẩm (chưa VAT và KPBT), trừ trực tiếp vào giá bán.', vat:0.08,
+    schedule:[
+      {dot:0,  mo:'Ký phiếu ĐKGC', pct:null, fixed:50000000, note:'Tiền giữ chỗ có điều kiện'},
+      {dot:1,  mo:'Ký VBTT (trong 7 ngày từ ĐKGC)', pct:15, note:'Giá chưa VAT (đã gồm tiền GC)'},
+      {dot:2,  mo:'Trong 2 tháng từ hạn Đợt 1', pct:5, note:'Giá chưa VAT'},
+      {dot:3,  mo:'Trong 2 tháng từ hạn Đợt 2', pct:5, note:'Giá chưa VAT'},
+      {dot:4,  mo:'Trong 10 ngày từ thông báo ký HĐMB (dự kiến Q1/2027)', pct:5, note:'Giá đã VAT; thu VAT Đợt 1,2,3'},
+      {dot:5,  mo:'1 tháng từ hạn Đợt 4',  pct:0.5, note:'Giá đã VAT'},
+      {dot:6,  mo:'1 tháng từ hạn Đợt 5',  pct:0.5},{dot:7, mo:'1 tháng từ hạn Đợt 6', pct:0.5},
+      {dot:8,  mo:'1 tháng từ hạn Đợt 7',  pct:0.5},{dot:9, mo:'1 tháng từ hạn Đợt 8', pct:0.5},
+      {dot:10, mo:'1 tháng từ hạn Đợt 9',  pct:0.5},{dot:11,mo:'1 tháng từ hạn Đợt 10',pct:0.5},
+      {dot:12, mo:'1 tháng từ hạn Đợt 11', pct:0.5},{dot:13,mo:'1 tháng từ hạn Đợt 12',pct:0.5},
+      {dot:14, mo:'1 tháng từ hạn Đợt 13', pct:0.5},
+      {dot:15, mo:'1 tháng từ hạn Đợt 14', pct:5},
+      {dot:16, mo:'1 tháng từ hạn Đợt 15', pct:0.5},{dot:17,mo:'1 tháng từ hạn Đợt 16',pct:0.5},
+      {dot:18, mo:'1 tháng từ hạn Đợt 17', pct:0.5},{dot:19,mo:'1 tháng từ hạn Đợt 18',pct:0.5},
+      {dot:20, mo:'1 tháng từ hạn Đợt 19', pct:0.5},{dot:21,mo:'1 tháng từ hạn Đợt 20',pct:0.5},
+      {dot:22, mo:'1 tháng từ hạn Đợt 21', pct:0.5},{dot:23,mo:'1 tháng từ hạn Đợt 22',pct:0.5},
+      {dot:24, mo:'1 tháng từ hạn Đợt 23', pct:0.5},{dot:25,mo:'1 tháng từ hạn Đợt 24',pct:0.5},
+      {dot:26, mo:'1 tháng từ hạn Đợt 25', pct:5},
+      {dot:27, mo:'Trong 10 ngày từ thông báo bàn giao (dự kiến Q4/2028)', pct:45, note:'Thêm 2% KPBT + 6 tháng PQL'},
+      {dot:28, mo:'Trong 10 ngày từ thông báo cấp Sổ hồng', pct:5},
+    ]},
+  damPhan: { name:'Thanh toán đàm phán',  ckRate:0.11,  ckLabel:'11%/năm', note:'Chiết khấu 11%/năm trên số tiền và thời gian thanh toán sớm hơn so với PTTT Chuẩn.', vat:0.08,
+    schedule:[
+      {dot:0,     mo:'Ký phiếu ĐKGC', pct:null, fixed:50000000, note:'Tiền giữ chỗ có điều kiện'},
+      {dot:1,     mo:'Trong 7 ngày từ ĐKGC', pct:10, note:'Giá chưa VAT (đã gồm tiền GC)'},
+      {dot:2,     mo:'Trong 2 tháng từ hạn Đợt 1', pct:5, note:'Giá chưa VAT'},
+      {dot:3,     mo:'Trong 2 tháng từ hạn Đợt 2', pct:5, note:'Giá chưa VAT'},
+      {dot:4,     mo:'Trong 10 ngày từ thông báo ký HĐMB (Q1/2027)', pct:10, note:'Giá đã VAT; thu VAT Đợt 1,2,3'},
+      {dot:'5–15',mo:'Mỗi tháng 1 đợt (Đợt 5 đến 15)', pct:'≥10 (đàm phán)', note:'KH đàm phán tỷ lệ % mỗi đợt (số nguyên)'},
+      {dot:'16–26',mo:'Mỗi tháng 1 đợt (Đợt 16 đến 26)', pct:'≥10 (đàm phán)', note:'KH đàm phán tỷ lệ % mỗi đợt (số nguyên)'},
+      {dot:27,    mo:'Trong 10 ngày từ thông báo bàn giao (Q4/2028)', pct:'đủ 95%', note:'Thêm 2% KPBT + 6 tháng PQL'},
+      {dot:28,    mo:'Trong 10 ngày từ thông báo cấp Sổ hồng', pct:5},
+    ]},
+  nhanh30: { name:'PTTT nhanh 30%',       ckRate:0.045, ckLabel:'4,5%',    note:'Thanh toán 30% ngay Đợt 1. Chiết khấu 4,5% trên giá sản phẩm (chưa VAT và KPBT).', vat:0.08,
+    schedule:[
+      {dot:0, mo:'Ký phiếu ĐKGC', pct:null, fixed:50000000, note:'Tiền giữ chỗ có điều kiện'},
+      {dot:1, mo:'Trong 7 ngày từ ĐKGC', pct:30, note:'Giá chưa VAT (đã gồm tiền GC)'},
+      {dot:2, mo:'Trong 10 ngày từ thông báo ký HĐMB (Q1/2027)', pct:null, note:'Thu VAT Đợt 1'},
+      {dot:3, mo:'Trong 1 tháng từ hạn ký HĐMB', pct:10, note:'Giá đã VAT'},
+      {dot:4, mo:'Trong 5 tháng từ hạn Đợt 3', pct:10},
+      {dot:5, mo:'Trong 5 tháng từ hạn Đợt 4', pct:10},
+      {dot:6, mo:'Trong 5 tháng từ hạn Đợt 5', pct:10},
+      {dot:7, mo:'Trong 10 ngày từ thông báo bàn giao (Q4/2028)', pct:25, note:'Thêm 2% KPBT + 6 tháng PQL'},
+      {dot:8, mo:'Trong 10 ngày từ thông báo cấp Sổ hồng', pct:5},
+    ]},
+  nhanh50: { name:'PTTT nhanh 50%',       ckRate:0.08,  ckLabel:'8%',      note:'Thanh toán 50% ngay Đợt 1. Chiết khấu 8% trên giá sản phẩm (chưa VAT và KPBT).', vat:0.08,
+    schedule:[
+      {dot:0, mo:'Ký phiếu ĐKGC', pct:null, fixed:50000000, note:'Tiền giữ chỗ có điều kiện'},
+      {dot:1, mo:'Trong 7 ngày từ ĐKGC', pct:50, note:'Giá chưa VAT (đã gồm tiền GC)'},
+      {dot:2, mo:'Trong 10 ngày từ thông báo ký HĐMB (Q1/2027)', pct:null, note:'Thu VAT Đợt 1'},
+      {dot:3, mo:'Trong 1 tháng từ hạn ký HĐMB', pct:10, note:'Giá đã VAT'},
+      {dot:4, mo:'Trong 5 tháng từ hạn Đợt 3', pct:10},
+      {dot:7, mo:'Trong 10 ngày từ thông báo bàn giao (Q4/2028)', pct:25, note:'Thêm 2% KPBT + 6 tháng PQL'},
+      {dot:8, mo:'Trong 10 ngày từ thông báo cấp Sổ hồng', pct:5},
+    ]},
+  nhanh70: { name:'PTTT nhanh 70%',       ckRate:0.10,  ckLabel:'10%',     note:'Thanh toán 70% ngay Đợt 1. Chiết khấu 10% trên giá sản phẩm (chưa VAT và KPBT).', vat:0.08,
+    schedule:[
+      {dot:0, mo:'Ký phiếu ĐKGC', pct:null, fixed:50000000, note:'Tiền giữ chỗ có điều kiện'},
+      {dot:1, mo:'Trong 7 ngày từ ĐKGC', pct:70, note:'Giá chưa VAT (đã gồm tiền GC)'},
+      {dot:2, mo:'Trong 10 ngày từ thông báo ký HĐMB (Q1/2027)', pct:null, note:'Thu VAT Đợt 1'},
+      {dot:7, mo:'Trong 10 ngày từ thông báo bàn giao (Q4/2028)', pct:25, note:'Thêm 2% KPBT + 6 tháng PQL'},
+      {dot:8, mo:'Trong 10 ngày từ thông báo cấp Sổ hồng', pct:5},
+    ]},
+};
+
+function initPolicies() {
+  const pttt = PTTT[selectedPTTT];
+  policies = [
+    { name: 'Chiết khấu PTTT (' + pttt.ckLabel + ')', pct: pttt.ckRate * 100, locked: true },
+    { name: 'Chiết khấu khác', pct: 0, locked: false },
+  ];
+  renderPolicies();
+}
+
+function renderPolicies() {
+  const c = document.getElementById('pol-container');
+  let h = `<div style="display:grid;grid-template-columns:2fr 100px auto;gap:6px;margin-bottom:4px;">
+    <span style="font-size:11px;color:var(--color-text-secondary);">Tên chính sách</span>
+    <span style="font-size:11px;color:var(--color-text-secondary);">Tỷ lệ (%)</span>
+    <span></span></div>`;
+  policies.forEach((p, i) => {
+    const ro = p.locked ? 'readonly style="background:var(--color-background-secondary);"' : '';
+    h += `<div style="display:grid;grid-template-columns:2fr 100px auto;gap:6px;margin-bottom:6px;align-items:center;">
+      <input value="${p.name}" ${p.locked?'readonly style="background:var(--color-background-secondary);"':''} oninput="policies[${i}].name=this.value" style="font-size:12px;padding:5px 8px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);width:100%;"/>
+      <input type="number" step="0.1" value="${p.pct}" ${ro} oninput="policies[${i}].pct=parseFloat(this.value)||0;liveCalc()" style="font-size:12px;padding:5px 8px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);color:var(--color-text-primary);width:100%;"/>
+      <button onclick="removePolicy(${i})" ${p.locked?'disabled':''} style="font-size:11px;padding:4px 8px;cursor:pointer;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);">✕</button>
+    </div>`;
+  });
+  c.innerHTML = h;
+  liveCalc();
+}
+
+function addPolicy() {
+  policies.push({ name: 'Chính sách khác', pct: 0, locked: false });
+  renderPolicies();
+}
+
+function removePolicy(i) {
+  if (!policies[i].locked) { policies.splice(i, 1); renderPolicies(); }
+}
+
+function selectPTTT(el) {
+  document.querySelectorAll('.pttt-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedPTTT = el.dataset.id;
+  const pttt = PTTT[selectedPTTT];
+  document.getElementById('pttt-note').textContent = pttt.note;
+  if (policies[0]) {
+    policies[0].name = 'Chiết khấu PTTT (' + pttt.ckLabel + ')';
+    policies[0].pct = pttt.ckRate * 100;
+    renderPolicies();
+  }
+}
+
+function calcNumbers() {
+  const giaBan = parseFloat(document.getElementById('giaBan').value) || 0;
+  const totalCK = policies.reduce((s, p) => s + (p.pct / 100) * giaBan, 0);
+  const giaSauCK = giaBan - totalCK;
+  const vat = giaSauCK * 0.08;
+  const totalGross = giaSauCK + vat;
+  return { giaBan, totalCK, giaSauCK, vat, totalGross };
+}
+
+function liveCalc() {
+  const { giaBan, totalCK, giaSauCK, vat, totalGross } = calcNumbers();
+  const preview = document.getElementById('live-preview');
+  if (giaBan > 0) {
+    preview.style.display = 'block';
+    document.getElementById('lp-gia-ban').textContent = fmt(giaBan);
+    document.getElementById('lp-ck').textContent = '- ' + fmt(totalCK);
+    document.getElementById('lp-sau-ck').textContent = fmt(giaSauCK);
+    document.getElementById('lp-vat').textContent = '+ ' + fmt(vat);
+    document.getElementById('lp-gross').textContent = fmt(totalGross);
+  } else {
+    preview.style.display = 'none';
+  }
+}
+
+function switchTab(name) {
+  ['input','quote','schedule'].forEach((t,i) => {
+    document.querySelectorAll('.tab')[i].classList.toggle('active', t===name);
+    document.getElementById('tab-'+t).classList.toggle('active', t===name);
+  });
+}
+
+function generateQuote() {
+  const { giaBan, totalCK, giaSauCK, vat, totalGross } = calcNumbers();
+  if (!giaBan) { alert('Vui lòng nhập giá bán'); return; }
+
+  const maCanHo = document.getElementById('maCanHo').value || '—';
+  const loai = document.getElementById('loaiCanHo').value;
+  const dtTT = document.getElementById('dtTT').value;
+  const dtThu = document.getElementById('dtThu').value;
+  const huong = document.getElementById('huong').value;
+  const view = document.getElementById('view').value;
+  const tenKH = document.getElementById('tenKH').value || 'Quý Khách hàng';
+  const pttt = PTTT[selectedPTTT];
+  const now = new Date();
+  const dateStr = `Ngày ${now.getDate()} tháng ${now.getMonth()+1} năm ${now.getFullYear()}`;
+
+  // Build policy rows
+  let polRows = '';
+  let running = giaBan;
+  policies.forEach(p => {
+    const amt = (p.pct / 100) * giaBan;
+    running -= amt;
+    polRows += `<tr>
+      <td class="pol-cell">${p.name}</td>
+      <td class="pol-cell r">${fmtPct(p.pct)}</td>
+      <td class="pol-cell r g">${amt > 0 ? '- ' + fmt(amt) : '—'}</td>
+    </tr>`;
+  });
+
+  const quoteHTML = `
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+      <div>
+        <div class="logo" style="margin-bottom:8px;display:inline-block;">DKRS – THE EMERALD BOULEVARD</div>
+        <p style="font-size:12px;color:var(--color-text-secondary);">${dateStr} &nbsp;|&nbsp; Kính gửi: <strong>${tenKH}</strong></p>
+      </div>
+      <span style="background:#1a3a2a;color:#fff;font-size:11px;padding:4px 10px;border-radius:var(--border-radius-md);">${pttt.name}</span>
+    </div>
+
+    <div class="apt-pills">
+      <div class="pill"><div class="lbl">Mã căn hộ</div><div class="val">${maCanHo}</div></div>
+      <div class="pill"><div class="lbl">Loại căn hộ</div><div class="val">${loai}</div></div>
+      <div class="pill"><div class="lbl">Hướng / View</div><div class="val">${huong} – ${view}</div></div>
+      ${dtTT ? `<div class="pill"><div class="lbl">DT tim tường</div><div class="val">${dtTT} m²</div></div>` : ''}
+      ${dtThu ? `<div class="pill"><div class="lbl">DT thông thuỷ</div><div class="val">${dtThu} m²</div></div>` : ''}
+    </div>
+
+    <hr class="divider"/>
+    <p class="section-title" style="margin-bottom:6px;">Chính sách bán hàng</p>
+
+    <table style="width:100%;border-collapse:collapse;margin-bottom:10px;">
+      <thead>
+        <tr>
+          <th style="background:#1a3a2a;color:#fff;padding:7px 10px;text-align:left;font-size:11px;font-weight:500;">Chính sách chiết khấu</th>
+          <th style="background:#1a3a2a;color:#fff;padding:7px 10px;text-align:right;font-size:11px;font-weight:500;">Tỷ lệ</th>
+          <th style="background:#1a3a2a;color:#fff;padding:7px 10px;text-align:right;font-size:11px;font-weight:500;">Số tiền chiết khấu</th>
+        </tr>
+      </thead>
+      <tbody>${polRows}</tbody>
+    </table>
+
+    <table class="summary-table">
+      <tr>
+        <td class="lbl">Giá bán chưa VAT</td>
+        <td class="val">${fmt(giaBan)}</td>
+      </tr>
+      <tr class="ck">
+        <td class="lbl">Tổng chiết khấu (${(totalCK/giaBan*100).toFixed(1)}%)</td>
+        <td class="val" style="color:#1a3a2a;">- ${fmt(totalCK)}</td>
+      </tr>
+      <tr>
+        <td class="lbl">Giá sau chiết khấu (chưa VAT)</td>
+        <td class="val">${fmt(giaSauCK)}</td>
+      </tr>
+      <tr class="vat-row">
+        <td class="lbl">+ VAT 8%</td>
+        <td class="val">${fmt(vat)}</td>
+      </tr>
+      <tr class="total-gross">
+        <td class="lbl" style="font-size:13px;font-weight:500;color:var(--color-text-primary);">Tổng giá bán có VAT</td>
+        <td class="val" style="font-size:14px;color:#1a3a2a;">${fmt(totalGross)}</td>
+      </tr>
+    </table>
+
+    <hr class="divider"/>
+    <p class="note">${pttt.note}</p>
+    <p class="note" style="margin-top:3px;">Thông báo áp dụng từ 05/05/2026 đến 20/07/2026 hoặc đến khi có thông báo mới.</p>
+  </div>`;
+
+  document.getElementById('quote-content').innerHTML = quoteHTML;
+
+  // Build schedule
+  let schedRows = '';
+  pttt.schedule.forEach(row => {
+    let amtStr, pctStr;
+    if (row.fixed) { amtStr = fmt(row.fixed); pctStr = '50.000.000đ'; }
+    else if (row.pct !== null && typeof row.pct === 'number') { amtStr = fmt(giaSauCK * row.pct / 100); pctStr = fmtPct(row.pct); }
+    else { amtStr = '—'; pctStr = row.pct ? String(row.pct) : '—'; }
+    schedRows += `<tr>
+      <td class="c">${row.dot}</td>
+      <td>${row.mo}</td>
+      <td style="text-align:right;white-space:nowrap;">${pctStr}</td>
+      <td class="r">${amtStr}</td>
+      <td class="muted">${row.note || ''}</td>
+    </tr>`;
+  });
+
+  document.getElementById('schedule-content').innerHTML = `
+  <div class="card">
+    <p class="section-title" style="margin-bottom:6px;">Lịch thanh toán – ${pttt.name}</p>
+    <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px;">Căn <strong>${maCanHo}</strong> &nbsp;|&nbsp; Giá sau CK (chưa VAT): <strong>${fmt(giaSauCK)}</strong> &nbsp;|&nbsp; Tổng giá bán có VAT: <strong>${fmt(totalGross)}</strong></p>
+    <div class="pt-wrap">
+    <table class="pt">
+      <thead><tr>
+        <th class="c" style="width:40px;">Đợt</th>
+        <th>Thời hạn thanh toán</th>
+        <th class="r" style="width:90px;">Tỷ lệ</th>
+        <th class="r" style="width:130px;">Số tiền (VNĐ)</th>
+        <th style="width:160px;">Ghi chú</th>
+      </tr></thead>
+      <tbody>${schedRows}</tbody>
+    </table>
+    </div>
+  </div>`;
+
+  switchTab('quote');
+}
+
+initPolicies();
+document.getElementById('pttt-note').textContent = PTTT.chuan.note;
+</script>
